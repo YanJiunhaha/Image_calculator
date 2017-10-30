@@ -115,5 +115,5 @@ def Combine():
     L3.config(image=imtk3)
 bt.config(command=Combine)
     
-
+root.mainloop()
 
