@@ -100,8 +100,6 @@ def RoomIn():
         scale=inNum.get()
         imageY=int(arr0.size/arr0[0].size)
         imageX=int(arr0[0].size/arr0[0][0].size)
-        resizeX=int(imageX*scale)
-        resizeY=int(imageY*scale)
         arr2=np.array(Image.new('RGB',(400,300)))
         ANDy=int(arr1.size/arr1[0].size)
         ANDx=int(arr1[0].size/arr1[0][0].size)
@@ -112,7 +110,7 @@ def RoomIn():
                     h=int(y/scale)
                     w=int(x/scale)
                     r=y%scale
-                    if h>=0 and w>=0 and h<(imageX-1) and w<imageY :
+                    if h<len(arr0[0])-1 and w<len(arr0):
                         arr2[x][y][2]=(arr0[w][h][2]*(scale-r)+arr0[w][h+1][2]*r)/scale
                         arr2[x][y][1]=(arr0[w][h][1]*(scale-r)+arr0[w][h+1][1]*r)/scale
                         arr2[x][y][0]=(arr0[w][h][0]*(scale-r)+arr0[w][h+1][0]*r)/scale
@@ -121,10 +119,28 @@ def RoomIn():
                     h=int(y/scale)+140
                     w=int(x/scale)+70
                     r=y%scale
-                    if h>=0 and w>=0 and h<(imageX-1) and w<imageY :
+                    if h<len(arr1[0])-1 and w<len(arr1) :
                         arr3[x][y][2]=(arr1[w][h][2]*(scale-r)+arr1[w][h+1][2]*r)/scale
                         arr3[x][y][1]=(arr1[w][h][1]*(scale-r)+arr1[w][h+1][1]*r)/scale
                         arr3[x][y][0]=(arr1[w][h][0]*(scale-r)+arr1[w][h+1][0]*r)/scale
+        else :#bilinear interpolation
+            for x in range(len(arr2)):
+                for y in range(len(arr2[0])):
+                    h=int(y/scale)
+                    w=int(x/scale)
+                    h_m=y%scale
+                    w_m=x%scale
+                    arr=[]
+                    if h<len(arr0[0])-1 and w<len(arr0)-1:
+                        arr.append(arr0[w][h])
+                        arr.append(arr0[w+1][h])
+                        arr.append(arr0[w][h+1])
+                        arr.append(arr0[w+1][h+1])
+                        m0=np.array([h-y,y-h])
+                        m1=np.array([[arr[0],arr[1]],[arr[2],arr[3]]])
+                        m2=np.array([[w-x],[x-w]])
+                        arr3[x][y][2]=int()
+                    
         imtk2=ImageTk.PhotoImage(Image.fromarray(arr2))
         iL2.config(image=imtk2)
         imtk3=ImageTk.PhotoImage(Image.fromarray(arr3))
