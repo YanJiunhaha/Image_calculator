@@ -21,10 +21,6 @@ b2=Button(bf,text='Room-in')
 b2.grid(row=0,column=2)
 b2.config(state='disable')
 
-b3=Button(bf,text='Room-Out')
-b3.grid(row=0,column=3)
-b3.config(state='disable')
-
 inNum=DoubleVar()
 inNum.set(1.0)
 entry=Entry(bf,textvariable=inNum,width=10)
@@ -56,7 +52,7 @@ Label(text='Image resize :').place(x=10,y=380)
 iL2=Label()
 iL2.place(x=10,y=400)
 
-Label(text='ADN Image resize :').place(x=420,y=380)
+Label(text='AND Image resize :').place(x=420,y=380)
 iL3=Label()
 iL3.place(x=420,y=400)
 
@@ -88,7 +84,6 @@ def ANDimage():
     imtk1=ImageTk.PhotoImage(im1)
     iL1.config(image=imtk1)
     b2.config(state='normal')
-    b3.config(state='normal')
     fr.config(state='normal')
     br.config(state='normal')
 b1.config(command=ANDimage)
@@ -106,7 +101,7 @@ def RoomIn():
         arr3=np.array(Image.new('RGB',(400,300)))
         if sel.get() == 0 :#frist order
             for x in range(len(arr2)):
-               for y in range(len(arr2[0])):
+                for y in range(len(arr2[0])):
                     h=int(y/scale)
                     w=int(x/scale)
                     r=y%scale
@@ -126,27 +121,50 @@ def RoomIn():
         else :#bilinear interpolation
             for x in range(len(arr2)):
                 for y in range(len(arr2[0])):
-                    h=int(y/scale)
-                    w=int(x/scale)
-                    h_m=y%scale
-                    w_m=x%scale
+                    h=y/scale
+                    w=x/scale
                     arr=[]
-                    if h<len(arr0[0])-1 and w<len(arr0)-1:
-                        arr.append(arr0[w][h])
-                        arr.append(arr0[w+1][h])
-                        arr.append(arr0[w][h+1])
-                        arr.append(arr0[w+1][h+1])
-                        m0=np.array([h-y,y-h])
-                        m1=np.array([[arr[0],arr[1]],[arr[2],arr[3]]])
-                        m2=np.array([[w-x],[x-w]])
-                        arr3[x][y][2]=int()
+                    if int(h)<len(arr0[0])-1 and int(w)<len(arr0)-1:
+                        arr.append(arr0[int(w)][int(h)])
+                        arr.append(arr0[int(w)+1][int(h)])
+                        arr.append(arr0[int(w)][int(h)+1])
+                        arr.append(arr0[int(w)+1][int(h)+1])
                     
+                        m0=np.array([int(w)+1-w,w-int(w)])
+                        m1_r=np.array([[arr[0][2],arr[1][2]],[arr[2][2],arr[3][2]]])
+                        m1_g=np.array([[arr[0][1],arr[1][1]],[arr[2][1],arr[3][1]]])
+                        m1_b=np.array([[arr[0][0],arr[1][0]],[arr[2][0],arr[3][0]]])
+                        m2=np.array([[int(h)+1-h],[h-int(h)]])
+                        arr2[x][y][2]=np.dot(m0,np.dot(m1_r,m2))
+                        arr2[x][y][1]=np.dot(m0,np.dot(m1_g,m2))
+                        arr2[x][y][0]=np.dot(m0,np.dot(m1_b,m2))
+            for x in range(len(arr3)):
+                for y in range(len(arr3[0])):
+                    h=y/scale+140
+                    w=x/scale+70
+                    arr=[]
+                    if int(h)<len(arr1[0])-1 and int(w)<len(arr1)-1:
+                        arr.append(arr1[int(w)][int(h)])
+                        arr.append(arr1[int(w)][int(h)+1])
+                        arr.append(arr1[int(w)+1][int(h)])
+                        arr.append(arr1[int(w)+1][int(h)+1])
+                        
+                        m0=np.array([int(w)+1-w,w-int(w)])
+                        m1_r=np.array([[arr[0][2],arr[1][2]],[arr[2][2],arr[3][2]]])
+                        m1_g=np.array([[arr[0][1],arr[1][1]],[arr[2][1],arr[3][1]]])
+                        m1_b=np.array([[arr[0][0],arr[1][0]],[arr[2][0],arr[3][0]]])
+                        m2=np.array([[int(h)+1-h],[h-int(h)]])
+                        arr3[x][y][2]=np.dot(m0,np.dot(m1_r,m2))
+                        arr3[x][y][1]=np.dot(m0,np.dot(m1_g,m2))
+                        arr3[x][y][0]=np.dot(m0,np.dot(m1_b,m2))
         imtk2=ImageTk.PhotoImage(Image.fromarray(arr2))
         iL2.config(image=imtk2)
         imtk3=ImageTk.PhotoImage(Image.fromarray(arr3))
-        iL3.config(image=imtk3)           
+        iL3.config(image=imtk3)
+    
     except:
         messagebox.showerror('Error','Input a number bigger than 1.')
+        
 b2.config(command=RoomIn)
 
 root.mainloop()
