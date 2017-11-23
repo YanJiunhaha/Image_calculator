@@ -41,10 +41,57 @@ def OpenFile():
             re=400/im0.width
         im0=im0.resize((int(im0.width*re),int(im0.height*re)),Image.ANTIALIAS)
         arr0=np.array(im0)
-        imtk0=ImageTk.PhotoImage(im0)
+        
+        for x in range(len(arr0)):
+            for y in range(len(arr0[0])):
+                gray=int(arr0[x][y][2]/3+arr0[x][y][1]/3+arr0[x][y][0]/3)
+                arr0[x][y]=[gray,gray,gray]
+        imtk0=ImageTk.PhotoImage(Image.fromarray(arr0))
         iL0.config(image=imtk0)
         b1.config(state='normal')
 b0.config(command=OpenFile)
 
-def 
+def histogram(arr,min_change=0,max_change=255):
+    minimum=255
+    maximum=0
+    for x in range(len(arr)):
+        for y in range(len(arr[0])):
+            if minimum > arr[x][y][0]:
+                minimum=arr[x][y][0]
+            if maximum <arr[x][y][0]:
+                maximum=arr[x][y][0]
+    
+    ratio=float(max_change-min_change)/(maximum-minimum)
+    
+    for x in range(len(arr)):
+        for y in range(len(arr[0])):
+            if ratio < 1:
+                R=arr[x][y][0]*ratio+min_change
+            else:
+                R=(arr[x][y][0]-minimum)*ratio+min_change
+            arr[x][y]=[R,R,R]
+def shrink():
+    global imtk1,iL1,arr0,arr1
+    histogram(arr0,100,200)
+    arr1=np.array(arr0)
+    imtk1=ImageTk.PhotoImage(Image.fromarray(arr0))
+    iL1.config(image=imtk1)
+def stretch():
+    global imtk2,iL2,arr0,arr1
+    histogram(arr0)
+    imtk2=ImageTk.PhotoImage(Image.fromarray(arr0))
+    iL2.config(image=imtk2)
+def equalization():
+    global imtk3,iL3,arr1
+    probability=np.zeros((1,256),dtype=np.int32)
+    for y in range(len(arr1)):
+        for x in range(len(arr1[0])):
+            probability[0][int(arr1[y][x][0])]=1+probability[0][int(arr1[y][x][0])]
+
+    
+def run():
+    shrink()
+    stretch()
+    equalization()
+b1.config(command=run)      
 root.mainloop()
