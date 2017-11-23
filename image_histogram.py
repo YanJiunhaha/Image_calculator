@@ -60,16 +60,11 @@ def histogram(arr,min_change=0,max_change=255):
                 minimum=arr[x][y][0]
             if maximum <arr[x][y][0]:
                 maximum=arr[x][y][0]
-    
-    ratio=float(max_change-min_change)/(maximum-minimum)
-    
+    ratio=(max_change-min_change)/(maximum-minimum)
     for x in range(len(arr)):
         for y in range(len(arr[0])):
-            if ratio < 1:
-                R=arr[x][y][0]*ratio+min_change
-            else:
-                R=(arr[x][y][0]-minimum)*ratio+min_change
-            arr[x][y]=[R,R,R]
+            G=(arr[x][y][0]-minimum)*ratio+min_change
+            arr[x][y]=[G,G,G]
 def shrink():
     global imtk1,iL1,arr0,arr1
     histogram(arr0,100,200)
@@ -83,11 +78,23 @@ def stretch():
     iL2.config(image=imtk2)
 def equalization():
     global imtk3,iL3,arr1
-    probability=np.zeros((1,256),dtype=np.int32)
-    for y in range(len(arr1)):
-        for x in range(len(arr1[0])):
-            probability[0][int(arr1[y][x][0])]=1+probability[0][int(arr1[y][x][0])]
-
+    probability=np.linspace(0,0,256)
+    for x in range(len(arr1)):
+        for y in range(len(arr1[0])):
+            probability[arr1[x][y][0]]=probability[arr1[x][y][0]]+1
+    s=np.linspace(0,0,256)
+    for i in range(len(probability)):
+        sum=0
+        for j in range(i):
+            sum=sum+probability[j]
+        s[i]=sum/len(arr1)/len(arr1[0])
+    print(s)
+    for x in range(len(arr1)):
+        for y in range(len(arr1[0])):
+            G=int(s[arr1[x][y][0]]*255)
+            arr1[x][y]=[G,G,G]
+    imtk3=ImageTk.PhotoImage(Image.fromarray(arr1))
+    iL3.config(image=imtk3)
     
 def run():
     shrink()
