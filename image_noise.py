@@ -51,6 +51,9 @@ def normal_noise(mean=0,variance=1):
     for x in range(len(arr0)):
         for y in range(len(arr0[0])):
             r=np.random.normal(mean,variance)
+            #u=np.random.rand()
+            #theta=np.random.rand()
+            #r=variance*np.cos(theta*2*np.pi)*(-np.log(u))**0.5+mean
             r=min(127,r)
             r=max(-128,r)
             for i in range(2):
