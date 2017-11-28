@@ -45,55 +45,60 @@ def OpenFile():
         iL0.config(image=imtk0)
         b1.config(state='normal')
 b0.config(command=OpenFile)
-def normal_noise(mean=0,variance=1):
+
+def normal_noise(mean=0,variance=1,probability=0.2):
     global imtk1,iL1,arr0
     arr1=np.array(arr0)
     for x in range(len(arr0)):
         for y in range(len(arr0[0])):
-            r=np.random.normal(mean,variance)
-            #u=np.random.rand()
-            #theta=np.random.rand()
-            #r=variance*np.cos(theta*2*np.pi)*(-np.log(u))**0.5+mean
-            r=min(127,r)
-            r=max(-128,r)
-            for i in range(2):
-                noise=arr0[x][y][i]+r
-                noise=min(noise,255)
-                noise=max(noise,0)
-                arr1[x][y][i]=noise
+            if np.random.rand()<probability:#課本設定發生機率20%
+                r=np.random.normal(mean,variance)
+                #=np.random.rand()
+                #heta=np.random.rand()
+                #=variance*np.cos(theta*2*np.pi)*(-np.log(u))**0.5+mean
+                r=min(127,r)
+                r=max(-128,r)
+                for i in range(3):
+                    noise=arr0[x][y][i]+r
+                    noise=min(noise,255)
+                    noise=max(noise,0)
+                    arr1[x][y][i]=noise
     imtk1=ImageTk.PhotoImage(Image.fromarray(arr1))
     iL1.config(image=imtk1)
-def uniform_noise(low=0,high=255):
+    
+def uniform_noise(low=0,high=255,probability=0.2):
     global imtk2,iL2,arr0
     arr2=np.array(arr0)
     for x in range(len(arr0)):
         for y in range(len(arr0[0])):
-            if np.random.rand()<0.2:#課本設定發生機率20%
+            if np.random.rand()<probability:#課本設定發生機率20%
                 r=np.random.uniform(low,high)
-                for i in range(2):
+                for i in range(3):
                     noise=arr0[x][y][i]+r
                     noise=min(noise,255)
                     noise=max(noise,0)
                     arr2[x][y][i]=noise
     imtk2=ImageTk.PhotoImage(Image.fromarray(arr2))
     iL2.config(image=imtk2)
-def impulse_noise(probability=0.1):
+    
+def impulse_noise(probability=0.2):
     global imtk3,iL3,arr0
     arr3=np.array(arr0)
     for x in range(len(arr0)):
         for y in range(len(arr0[0])):
-            if np.random.rand()<probability:#課本設定發生機率10%
+            if np.random.rand()<probability/2: #課本設定發生機率10%
                 arr3[x][y]=[0,0,0]
     for x in range(len(arr0)):
         for y in range(len(arr0[0])):
-            if np.random.rand()<probability:#課本設定發生機率10%
+            if np.random.rand()<probability/2: #課本設定發生機率10%
                 arr3[x][y]=[255,255,255]
-    
     imtk3=ImageTk.PhotoImage(Image.fromarray(arr3))
     iL3.config(image=imtk3)
+    
 def calculator():
-    normal_noise(0,60)
-    uniform_noise(50,120)
-    impulse_noise(0.1)
+    normal_noise(0,60,0.2)
+    uniform_noise(50,120,0.2)
+    impulse_noise(0.2)
 b1.config(command=calculator)
+
 root.mainloop()
