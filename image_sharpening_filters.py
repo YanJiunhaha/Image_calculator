@@ -24,7 +24,7 @@ b2=Button(bf,text='Calculator:high pass')
 b2.grid(row=0,column=3)
 b2.config(state='disable')
 
-T=IntVar()
+T=DoubleVar()
 T.set(1)
 e1=Entry(bf,textvariable=T,width=5)
 e1.grid(row=0,column=4)
