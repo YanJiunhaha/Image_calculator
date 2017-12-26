@@ -5,7 +5,7 @@ from PIL import Image,ImageTk
 import numpy as np
 root=Tk()
 root.title('Image project 8')
-root.geometry('830x700')
+root.geometry('1450x700')
 
 bf=Frame(root)
 bf.place(x=10,y=10)
@@ -36,13 +36,13 @@ b2.config(state='disable')
 Label(text='Picture :').place(x=10,y=50)
 iL0=Label()
 iL0.place(x=10,y=70)
-Label(text='Picture :').place(x=420,y=50)
+Label(text='Picture(512*512) :').place(x=420,y=50)
 iL1=Label()
 iL1.place(x=420,y=70)
-Label(text='').place(x=10,y=380)
+Label(text='General Wavelet form :').place(x=935,y=50)
 iL2=Label()
-iL2.place(x=10,y=400)
-Label(text='General Wavelet form :').place(x=420,y=380)
+iL2.place(x=935,y=70)
+Label(text='').place(x=420,y=380)
 iL3=Label()
 iL3.place(x=420,y=400)
 
@@ -76,6 +76,8 @@ def OpenFile():
         imtk0=ImageTk.PhotoImage(im0)
         region=(50,0,350,300)
         im1=im0.crop(region)
+        im1=im1.resize((int(512/300*im1.width),int(512/300*im1.width)),Image.ANTIALIAS)
+        arr1=np.array(im1)
         imtk1=ImageTk.PhotoImage(im1)
         iL1.config(image=imtk1)
         iL0.config(image=imtk0)
@@ -98,7 +100,7 @@ def DCT():
                 if x==0 or y==0 or x==7 or y==7:
                     arr0[axisX.get()+x][axisY.get()+y][0]=255
         print('input image :')
-        arr=test()
+        #arr=test()
         print(arr)
         arr=arr-128
         print(arr)
@@ -128,6 +130,34 @@ def DCT():
         
 b1.config(command=DCT)
 
+def compress(data,passes):
+    out=np.array(data)
+    for x in range(int(len(data)/(2**(passes)))):
+         for y in range(int(len(data[0])/(2**(passes+1)))):
+             low=(data[x][y*2][0]*0.5+data[x][y*2+1][0]*0.5)
+             high=(data[x][y*2][0]*0.5-data[x][y*2+1][0]*0.5)+128
+             low=min(low,255)
+             high=max(high,0)
+             out[x][y]=[low,low,low]
+             out[x][y+int(len(data[0])/(2**(passes+1)))]=[high,high,high]
+    return out
+def imageCompress(data,order):
+    out=np.array(data)
+    for i in range(order):
+        out=compress(out,i)
+        out=np.transpose(out,(1,0,2))
+        out=compress(out,i)
+        out=np.transpose(out,(1,0,2))
+        data=np.array(out)
+    return out
+def generalWaveletForm():
+    global imtk2
+    pic=np.array(arr1)
+    pic=imageCompress(pic,3)
+    imtk2=ImageTk.PhotoImage(Image.fromarray(pic))
+    iL2.config(image=imtk2)
+
+b2.config(command=generalWaveletForm)
 
 
 
