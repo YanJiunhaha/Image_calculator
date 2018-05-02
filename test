@@ -1,0 +1,111 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+using System.IO;
+using System.Drawing.Imaging;
+
+namespace WindowsFormsApplication1
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+        }
+        Bitmap image1;
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Stream mystream = null;
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    if ((mystream = openFileDialog.OpenFile()) != null)
+                    {
+                        image1 = (Bitmap)Bitmap.FromStream(mystream);
+                        pictureBox1.Image = image1;
+                    }
+                }
+                catch(Exception ex)
+                {
+                    MessageBox.Show("Error.Could not read file:" + ex.Message);
+                }
+            }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Rectangle rect1 = new Rectangle(0, 0, image1.Width, image1.Height);
+            BitmapData data1 = image1.LockBits(rect1, ImageLockMode.ReadWrite, image1.PixelFormat);
+
+            Bitmap image2 = new Bitmap(image1.Width, image1.Height, image1.PixelFormat);
+            Rectangle rect2 = new Rectangle(0, 0, image2.Width, image2.Height);
+            BitmapData data2 = image2.LockBits(rect2, ImageLockMode.ReadWrite, image2.PixelFormat);
+
+            IntPtr ptr1 = data1.Scan0;
+            IntPtr ptr2 = data2.Scan0;
+
+            byte[] rgb1 = new byte[data1.Stride * data1.Height];
+            byte[] rgb2 = new byte[data2.Stride * data2.Height];
+
+            int skip1 = data1.Stride - image1.Width;
+            int skip2 = data2.Stride - image2.Width;
+
+            System.Runtime.InteropServices.Marshal.Copy(ptr1, rgb1, 0, rgb1.Length);
+
+            int counter = 0;
+            const int maskSize=3;
+            for (int y = 0; y < image1.Height; ++y)
+            {
+                for (int x = 0; x < image1.Width; ++x)
+                {
+                    if (y >= (maskSize / 2) && y < image1.Height - (maskSize / 2) && x >= (maskSize / 2) && x < image1.Width - (maskSize / 2)) 
+                    {
+                        double sum = 0;
+                        for (int i = 0; i < 3; ++i) 
+                        {
+                            for (int j = 0; j < 3; ++j) 
+                            {
+                                sum += rgb1[(y + i - 1) * data1.Stride + (x + j - 1)];
+                            }
+                        }
+                        rgb2[y * data2.Stride + x] = Convert.ToByte(sum/9);
+                    }
+                    counter+=1;
+                } counter += skip1;
+            }
+            byte max = 0, min = 255;
+            foreach (byte d in rgb2) 
+            {
+                if (max < d) max = d;
+                if (min > d) min = d;
+            }
+            const byte b = 200, s = 0;
+
+            for (int y = 0; y < image1.Height; ++y)
+            {
+                for (int x = 0; x < image1.Width; ++x)
+                {
+                    rgb2[counter] = Convert.ToByte(rgb2[counter] * (b - s) / (max - min) + 25);
+                    counter += 1;
+                } counter += skip1;
+            }
+
+
+            ColorPalette mypalette = image1.Palette;
+            image2.Palette = mypalette;
+
+            System.Runtime.InteropServices.Marshal.Copy(rgb2, 0, ptr2, rgb2.Length);
+            image1.UnlockBits(data1);
+            image2.UnlockBits(data2);
+            pictureBox2.Image = image2;
+        }
+    }
+}
