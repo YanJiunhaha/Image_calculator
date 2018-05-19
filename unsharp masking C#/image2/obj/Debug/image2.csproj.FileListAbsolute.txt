@@ -1,0 +1,9 @@
+c:\users\yanjiun\documents\visual studio 2015\Projects\image2\image2\bin\Debug\image2.exe.config
+C:\Users\YanJiun\Documents\Visual Studio 2015\Projects\image2\image2\bin\Debug\image2.exe
+C:\Users\YanJiun\Documents\Visual Studio 2015\Projects\image2\image2\bin\Debug\image2.pdb
+C:\Users\YanJiun\Documents\Visual Studio 2015\Projects\image2\image2\obj\Debug\image2.csprojResolveAssemblyReference.cache
+C:\Users\YanJiun\Documents\Visual Studio 2015\Projects\image2\image2\obj\Debug\image2.Form1.resources
+C:\Users\YanJiun\Documents\Visual Studio 2015\Projects\image2\image2\obj\Debug\image2.Properties.Resources.resources
+C:\Users\YanJiun\Documents\Visual Studio 2015\Projects\image2\image2\obj\Debug\image2.csproj.GenerateResource.Cache
+C:\Users\YanJiun\Documents\Visual Studio 2015\Projects\image2\image2\obj\Debug\image2.exe
+C:\Users\YanJiun\Documents\Visual Studio 2015\Projects\image2\image2\obj\Debug\image2.pdb
