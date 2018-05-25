@@ -172,23 +172,36 @@ namespace image3
 
         private void button2_Click(object sender, EventArgs e)
         {
-            int[] test = { 1, 1, 1, 1, 1, 1, 1, 1, 1 };
-            int[] maskH = { -1, -2, -1, 0, 0, 0, 1, 2, 1 };
-            int[] maskV = { -1, 0, 1, -2, 0, 2, -1, 0, 1 };
-            int[] maskR = { 0, 1, 1, -1, 0, 1, -1, -1, 0 };
-            int[] maskL = { -1, -1, 0, -1, 0, 1, 0, 1, 1 };
-            int maskSize = 3;
-            Bitmap sobelV = Convolve(image1, maskV, maskSize);
-            Bitmap sobelH = Convolve(image1, maskH, maskSize);
-            Bitmap sobel90 = Add(sobelV, sobelH);
+            try
+            {
+                int gradient = Convert.ToInt32(textBox1.Text);
 
-            Bitmap sobelR = Convolve(image1, maskR, maskSize);
-            Bitmap sobelL = Convolve(image1, maskL, maskSize);
-            Bitmap sobel45 = Add(sobelR, sobelL);
-            pictureBox2.Image = sobel45;
-            pictureBox3.Image = sobel90;
-            Bitmap sobel = Add(sobel45, sobel90);
-            pictureBox4.Image = sobel;
+                int[] test = { 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+                int[] maskH = { -1, -2, -1, 0, 0, 0, 1, 2, 1 };
+                int[] maskV = { -1, 0, 1, -2, 0, 2, -1, 0, 1 };
+                int[] maskR = { 0, 1, 1, -1, 0, 1, -1, -1, 0 };
+                int[] maskL = { -1, -1, 0, -1, 0, 1, 0, 1, 1 };
+                int maskSize = 3;
+                Bitmap sobelV = Convolve(image1, maskV, maskSize);
+                Bitmap sobelH = Convolve(image1, maskH, maskSize);
+                Bitmap sobel90 = Add(sobelV, sobelH);
+                Bitmap sobelR = Convolve(image1, maskR, maskSize);
+                Bitmap sobelL = Convolve(image1, maskL, maskSize);
+                Bitmap sobel45 = Add(sobelR, sobelL);
+                Bitmap sobel = Add(sobel45, sobel90);
+                pictureBox3.Image = sobel;
+
+                Rectangle r1 = new Rectangle(0, 0, sobel.Width, sobel.Height);
+                BitmapData d1 = sobel.LockBits(r1, ImageLockMode.ReadOnly, sobel.PixelFormat);
+                IntPtr ptr1 = d1.Scan0;
+                byte[] rgb1 = new byte[d1.Stride * sobel.Height];
+                System.Runtime.InteropServices.Marshal.Copy(ptr1, rgb1, 0, rgb1.Length);
+                sobel.UnlockBits(d1);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
     }
 }
