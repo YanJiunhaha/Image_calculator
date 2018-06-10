@@ -234,7 +234,7 @@ namespace image3
                 {
                     if (rgb1[counter] > 0)
                     {
-                        for(double theta = -90; theta <= 90; ++theta)
+                        for(double theta = -90; theta < 90; ++theta)
                         {
                             ++Irgb2[Convert.ToInt32(x * Math.Cos(theta / 180 * Math.PI) + y * Math.Sin(theta / 180 * Math.PI)+iD) * d2.Stride + (90 + Convert.ToInt32(theta))];
                         }
@@ -277,19 +277,38 @@ namespace image3
                     {
                         for (int i = 0, j; i < imageRes.Width; ++i)
                         {
-                            double temp = ((Convert.ToDouble(y)-iD - Convert.ToDouble(i) * Math.Cos(Convert.ToDouble(x - 90) / 180 * Math.PI)) / Math.Sin(Convert.ToDouble(x - 90) / 180 * Math.PI));
-                            if (temp > 0 && temp < imageRes.Height-1)
+                            double temp = ((Convert.ToDouble(y) - iD - Convert.ToDouble(i) * Math.Cos(Convert.ToDouble(x - 90) / 180 * Math.PI)) / Math.Sin(Convert.ToDouble(x - 90) / 180 * Math.PI));
+                            if (temp > 0 && temp < imageRes.Height - 1)
                             {
                                 j = Convert.ToInt32(temp);
-                                try
-                                {
-                                    rgb3[j * d3.Stride + i * 3] = rgb3[j * d3.Stride + i * 3 + 1] = 0;
-                                    rgb3[j * d3.Stride + i * 3 + 2] = 255;
-                                }
-                                catch { MessageBox.Show("x=" + i.ToString() + " y=" + j.ToString()); }
-                            }
 
+                                rgb3[j * d3.Stride + i * 3] = rgb3[j * d3.Stride + i * 3 + 1] = 0;
+                                rgb3[j * d3.Stride + i * 3 + 2] = 255;
+                            }
                         }
+                        for (int j = 0, i; j < imageRes.Height; ++j)
+                        {
+                            double temp = ((Convert.ToDouble(y) - iD - Convert.ToDouble(j) * Math.Sin(Convert.ToDouble(x - 90) / 180 * Math.PI)) / Math.Cos(Convert.ToDouble(x - 90) / 180 * Math.PI));
+                            if (temp > 0 && temp < imageRes.Height - 1)
+                            {
+                                i = Convert.ToInt32(temp);
+
+                                rgb3[j * d3.Stride + i * 3] = rgb3[j * d3.Stride + i * 3 + 1] = 0;
+                                rgb3[j * d3.Stride + i * 3 + 2] = 255;
+                            }
+                        }
+                        //for(int i = 0; i < imageRes.Height; ++i)
+                        //{
+                        //    for (int j = 0; j < imageRes.Width; ++j)
+                        //    {
+                        //        if (y == (Math.Cos(Math.PI * (x - 90) / 180)) * j + Math.Sin(Math.PI * (y - 90) / 180) * i)
+                        //        {
+                        //            rgb3[i * d3.Stride + j * 3] = rgb3[i * d3.Stride + j * 3 + 1] = 0;
+                        //            rgb3[i * d3.Stride + j * 3 + 2] = 255;
+                        //        }
+                        //    }
+                        //}
+
                     }
                 }
             }
