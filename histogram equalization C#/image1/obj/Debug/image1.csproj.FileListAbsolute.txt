@@ -7,3 +7,12 @@ c:\users\yanjiun\documents\visual studio 2015\Projects\image1\image1\obj\Debug\i
 c:\users\yanjiun\documents\visual studio 2015\Projects\image1\image1\obj\Debug\image1.csproj.GenerateResource.Cache
 c:\users\yanjiun\documents\visual studio 2015\Projects\image1\image1\obj\Debug\image1.exe
 c:\users\yanjiun\documents\visual studio 2015\Projects\image1\image1\obj\Debug\image1.pdb
+C:\Users\YanJiun\Desktop\github\Image_calculator\histogram equalization C#\image1\bin\Debug\image1.exe.config
+C:\Users\YanJiun\Desktop\github\Image_calculator\histogram equalization C#\image1\bin\Debug\image1.exe
+C:\Users\YanJiun\Desktop\github\Image_calculator\histogram equalization C#\image1\bin\Debug\image1.pdb
+C:\Users\YanJiun\Desktop\github\Image_calculator\histogram equalization C#\image1\obj\Debug\image1.csprojResolveAssemblyReference.cache
+C:\Users\YanJiun\Desktop\github\Image_calculator\histogram equalization C#\image1\obj\Debug\image1.Form1.resources
+C:\Users\YanJiun\Desktop\github\Image_calculator\histogram equalization C#\image1\obj\Debug\image1.Properties.Resources.resources
+C:\Users\YanJiun\Desktop\github\Image_calculator\histogram equalization C#\image1\obj\Debug\image1.csproj.GenerateResource.Cache
+C:\Users\YanJiun\Desktop\github\Image_calculator\histogram equalization C#\image1\obj\Debug\image1.exe
+C:\Users\YanJiun\Desktop\github\Image_calculator\histogram equalization C#\image1\obj\Debug\image1.pdb
