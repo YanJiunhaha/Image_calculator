@@ -29,7 +29,7 @@ namespace image1
             int skip2 = d2.Stride - im_gray.Width;
 
             int counter1 = 0,counter2=0;
-            double sum = 0;
+            //double sum = 0;
             for(int y=0; y < im_gray.Height; ++y)
             {
                 for (int x = 0; x < im_gray.Width; ++x)
@@ -104,13 +104,38 @@ namespace image1
                             pictureBox1.Image = image1;
                         }
                     }
+                }
+                    catch (Exception ex)
+                {
+                    MessageBox.Show("Error.Could not read file:" + ex.Message);
+                }
             }
-                catch (Exception ex)
+        }
+
+        private byte[] histogram(byte[] rgb1) {
+            int[] probability = new int[256];
+            for (int counter = 0; counter < rgb1.Length; ++counter)
             {
-                MessageBox.Show("Error.Could not read file:" + ex.Message);
+                probability[rgb1[counter]]++;
             }
-        }
-        }
+
+            int[] acc = new int[256];
+            for (int i = 0; i < probability.Length; ++i)
+            {
+                int sum = 0;
+                for (int j = 0; j < i; ++j)
+                {
+                    sum += probability[j];
+                }
+                acc[i] = sum * 255 / rgb1.Length;
+            }
+            byte[] rgb2 = new byte[rgb1.Length];
+            for (int counter=0; counter<rgb2.Length; ++counter)
+            {
+                rgb2[counter] = (byte)acc[rgb1[counter]];
+            }
+            return rgb2;
+        } 
 
         private void button2_Click(object sender, EventArgs e)
         {
@@ -132,39 +157,40 @@ namespace image1
 
             System.Runtime.InteropServices.Marshal.Copy(ptr1,rgb1,0,rgb1.Length);
 
-            int counter = 0;
-            int[] probability = new int[256];
-            for(int y = 0; y < image1.Height; ++y)
-            {
-                for(int x = 0; x < image1.Width; ++x)
-                {
-                    probability[rgb1[counter]]++;
-                    counter += 1;
-                }
-                counter += skip1;
-            }
+            rgb2=histogram(rgb1);
+            //int counter = 0;
+            //int[] probability = new int[256];
+            //for(int y = 0; y < image1.Height; ++y)
+            //{
+            //    for(int x = 0; x < image1.Width; ++x)
+            //    {
+            //        probability[rgb1[counter]]++;
+            //        counter += 1;
+            //    }
+            //    counter += skip1;
+            //}
 
-            int[] acc = new int[256];
-            for(int i = 0; i < probability.Length; ++i)
-            {
-                int sum = 0;
-                for(int j = 0; j < i; ++j)
-                {
-                    sum += probability[j];
-                }
-                acc[i] = sum*255/(image1.Height*image1.Width);
-            }
+            //int[] acc = new int[256];
+            //for(int i = 0; i < probability.Length; ++i)
+            //{
+            //    int sum = 0;
+            //    for(int j = 0; j < i; ++j)
+            //    {
+            //        sum += probability[j];
+            //    }
+            //    acc[i] = sum*255/(image1.Height*image1.Width);
+            //}
 
-            counter = 0;
-            for(int y = 0; y < image2.Height; ++y)
-            {
-                for(int x = 0; x < image2.Width; ++x)
-                {
-                    rgb2[counter] = (byte)acc[rgb1[counter]];
-                    counter += 1;
-                }
-                counter += skip2;
-            }
+            //counter = 0;
+            //for(int y = 0; y < image2.Height; ++y)
+            //{
+            //    for(int x = 0; x < image2.Width; ++x)
+            //    {
+            //        rgb2[counter] = (byte)acc[rgb1[counter]];
+            //        counter += 1;
+            //    }
+            //    counter += skip2;
+            //}
             
             ColorPalette myPalette = image1.Palette;
             image2.Palette = myPalette;
@@ -179,5 +205,54 @@ namespace image1
             pictureBox2.Image = image2;
         }
 
+        private void button3_Click(object sender, EventArgs e)
+        {
+            int size = Convert.ToInt32(textBox1.Text);
+            Rectangle rect1 = new Rectangle(0, 0, image1.Width, image1.Height);
+            BitmapData data1 = image1.LockBits(rect1, ImageLockMode.ReadWrite, image1.PixelFormat);
+
+            Bitmap image2 = new Bitmap(image1.Width, image1.Height, image1.PixelFormat);
+            Rectangle rect2 = new Rectangle(0, 0, image2.Width, image2.Height);
+            BitmapData data2 = image2.LockBits(rect2, ImageLockMode.ReadWrite, image2.PixelFormat);
+
+            IntPtr ptr1 = data1.Scan0;
+            IntPtr ptr2 = data2.Scan0;
+
+            byte[] rgb1 = new byte[data1.Stride * image1.Height];
+            byte[] rgb2 = new byte[data2.Stride * image2.Height];
+
+            int skip1 = data1.Stride - image1.Width;
+            int skip2 = data2.Stride - image2.Width;
+
+            System.Runtime.InteropServices.Marshal.Copy(ptr1, rgb1, 0, rgb1.Length);
+
+            //rgb2 = histogram(rgb1);
+            for (int y = size / 2; y < image1.Height - size / 2; ++y) {
+                for (int x = size / 2; x < image1.Width - size /2; ++x)
+                {
+                    byte[] local = new byte[size * size];
+                    for (int i = -(size - 1) / 2,counter=0; i <= (size - 1) / 2; ++i)
+                    {
+                        for(int j=-(size - 1)/2; j<= (size - 1)/2; ++j,++counter)
+                        {
+                            local[counter] = rgb1[(y + i) * data1.Stride + (x + j)];
+                        }
+                    }
+                    rgb2[y * data2.Stride + x] = histogram(local)[size*size/2];
+                }
+            }
+
+            ColorPalette myPalette = image1.Palette;
+            image2.Palette = myPalette;
+
+            System.Runtime.InteropServices.Marshal.Copy(rgb2, 0, ptr2, rgb2.Length);
+
+            pictureBox3.Image = DrawHistogram(rgb1);
+            pictureBox4.Image = DrawHistogram(rgb2);
+
+            image1.UnlockBits(data1);
+            image2.UnlockBits(data2);
+            pictureBox2.Image = image2;
+        }
     }
 }

@@ -19,3 +19,9 @@ C:\Users\YanJiun\Desktop\github\Image_calculator\histogram equalization C#\image
 D:\Users\YanJiun\Desktop\github\Image_calculator\histogram equalization C#\image1\bin\Debug\image1.exe.config
 D:\Users\YanJiun\Desktop\github\Image_calculator\histogram equalization C#\image1\obj\Debug\image1.exe
 D:\Users\YanJiun\Desktop\github\Image_calculator\histogram equalization C#\image1\obj\Debug\image1.pdb
+D:\Users\YanJiun\Desktop\github\Image_calculator\histogram equalization C#\image1\bin\Debug\image1.exe
+D:\Users\YanJiun\Desktop\github\Image_calculator\histogram equalization C#\image1\bin\Debug\image1.pdb
+D:\Users\YanJiun\Desktop\github\Image_calculator\histogram equalization C#\image1\obj\Debug\image1.csprojResolveAssemblyReference.cache
+D:\Users\YanJiun\Desktop\github\Image_calculator\histogram equalization C#\image1\obj\Debug\image1.Form1.resources
+D:\Users\YanJiun\Desktop\github\Image_calculator\histogram equalization C#\image1\obj\Debug\image1.Properties.Resources.resources
+D:\Users\YanJiun\Desktop\github\Image_calculator\histogram equalization C#\image1\obj\Debug\image1.csproj.GenerateResource.Cache
